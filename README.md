@@ -1,5 +1,8 @@
 # Subgroups in graph products of groups
-This project contains some algorithms (in Python3) related to presentations of Cartesian subgroups in graph products of groups. This is the topic of the upcoming paper "Cartesian subgroups in graph products of groups" by the author.
+Cartesian subgroups in graph products of groups are generalisations of commutator subgroups in right-angled Coxeter groups (RACGs).
+
+In the upcoming paper "Cartesian subgroups in graph products of groups", we describe how to compute "small" presentations of these subgroups by generators and relations.
+This project contains some algorithms (implemented in Python3) which do most of the calculations.
 
 # Mathematics 
 For a simple graph $\Gamma$ on the vertex set $[m]=(1,\dots,m)$, consider the **right-angled Coxeter group**
@@ -9,22 +12,24 @@ We describe a small presentation of its commutator subgroup $RC'_\Gamma,$ which 
 By "duplicating" generators and relations, one obtains presentations for Cartesian subgroups of graph products of arbitrary discrete groups, $Cart(\underline{G},\Gamma):=Ker(\underline{G}^\Gamma\to G_1\times\dots\times G_m)$ (see the paper for the details).
 
 ## Generators
-For $i\in J\subset[m]$, consider the elements $L(i,J):=\prod_{j\in J}g_j\cdot g_i^{-1}\cdot (\prod_{j\in J\setminus i}g_j)^{-1}\in RC'_ \Gamma$ (the products are in the ascending order, eg $L(3,1358)=g_1g_3g_5g_8\cdot g_3^{-1}\cdot (g_1g_5g_8)^{-1} = g_1g_3g_5g_8g_3g_8g_5g_1$). 
+Given $i\in J\subset[m]$, consider the element $L(i,J):=\prod_{j\in J}g_j\cdot g_i^{-1}\cdot (\prod_{j\in J\setminus i}g_j)^{-1}$ of the group $RC'_ \Gamma$. Here the products are in the ascending order, eg $L(3,1358)=g_1g_3g_5g_8\cdot g_3^{-1}\cdot (g_1g_5g_8)^{-1} = g_1g_3g_5g_8g_3g_8g_5g_1$. 
 
-Consider the following subset $\Theta(J)$ of $J$: we have $i\in\Theta(J)$ if and only if the following two conditions are satisfied:
+Consider the following subset $\Theta(J)$ of $J$. We have $i\in\Theta(J)$ if and only if the following two conditions are satisfied:
 * In the induced subgraph $\Gamma_J$, the vertex $i$ is the smallest in its path component;
 * The vertices $i$ and $\max(J)$ are in different path components of $\Gamma_J$.
 
 Then the set $\widehat{D}:=(L(i,J):i\in\Theta(J),J\subset[m])$ of **distinguished elements** is our generating set for $RC'_\Gamma$. (This set of generators was suggested by Li Cai.)
 
-In particular, each $L(i,J)$ can be written as a word $Red(L(i,J))$ on distinguished elements. The function `lib.GenMakeDistinguished(K,graph)` computes this word (here `K`= $L(i,J)$, `graph`= $\Gamma$).
+In particular, each element $L(i,J)$ is equal in $RC'_\Gamma$ to a word $Red(L(i,J))$ on distinguished elements. This word is computed by the function `lib.GenMakeDistinguished(K,graph)` (here `K`= $L(i,J)$, `graph`= $\Gamma$).
 
 ## Relations
-The relations correspond to the cycles in induced subgraphs. In more detail, let $\lambda=(i_1,\dots,i_k,i_{k+1}=i_1)$ be a cycle in the induced subgraph $\Gamma_J$. Then $R(\lambda)=1$ in $RC'_\Gamma$, where
+The relations correspond to the cycles in induced subgraphs. In more detail, let $\lambda=(i_1,\dots,i_k,i_{k+1}=i_1)$ be a cycle in the induced subgraph $\Gamma_J$. Then $R(\lambda,J)=1$ in $RC'_\Gamma$, where
 
-$R(\lambda)=\prod_{t=1}^k L(i_{t+1},J\setminus i_t)\cdot L(i_t,J\setminus i_{t+1})^{-1}.$
+$R(\lambda,J)=\prod_{t=1}^k L(i_{t+1},J\setminus i_t)\cdot L(i_t,J\setminus i_{t+1})^{-1}.$
 
-After applying $Red(-)$, we obtain a relation $Red(R(\lambda))=1$ between the generators. The function `lib.ReducedPathRelation(big_graph, path, J)` computes this relation (as a word on distinguished elements).
+After applying $Red(-)$, we obtain a relation $Red(R(\lambda,J))=1$ between the generators. The function `lib.ReducedPathRelation(big_graph, path, J)` computes this relation (as a word on distinguished elements).
+
+For each $J\subset[m]$, choose a set of cycles $Gen(J)$ which generates the fundamental groups of clique complexes for each path component of $\Gamma_J$. Then $(Red(R(\lambda,J)):\lambda\in Gen(J),J\subset[m])$ is a sufficient set of relations.
 
 # Content
 
