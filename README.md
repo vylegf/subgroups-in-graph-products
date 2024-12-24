@@ -20,7 +20,9 @@ Consider the following subset $\Theta(J)$ of $J$. We have $i\in\Theta(J)$ if and
 
 >The set $\widehat{D}:=\lbrace L(i,J):i\in\Theta(J),J\subset[m]\rbrace$ of **distinguished elements** is our generating set for $RC'_\Gamma$. (This set of generators was suggested by Li Cai.)
 
-In particular, each element $L(i,J)$ is equal in $RC'_\Gamma$ to a word $Red(L(i,J))$ on distinguished elements. This word is computed by the function `lib.GenMakeDistinguished(K,graph)` (here `K`= $L(i,J)$, `graph`= $\Gamma$).
+This set is computed by the function `ListGens(graph)`.
+
+Since $\widehat{D}$ generates the whole group, each element $L(i,J)$ is equal in $RC'_\Gamma$ to a word $Red(L(i,J))$ on distinguished elements. This word is computed by the function `lib.GenMakeDistinguished(K,graph)` (here `K`= $L(i,J)$, `graph`= $\Gamma$).
 
 ($Red$ works recursively, using elementary identities $L(\max(J),J)=1$ and $L(i,J)L(j,J\setminus i)=L(j,J)L(i,J\setminus j)$ for $\lbrace i,j\rbrace\in\Gamma_J$.)
 
