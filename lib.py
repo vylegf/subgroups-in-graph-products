@@ -1,5 +1,5 @@
 import networkx as nx
-
+from itertools import combinations,chain
 #------------------------------------------------------------------------
 # Provided a simple graph $Г$ and a simplicial loop $l$ in $Г$, this library
 # allows to compute the relation $Red(R(l))$ between the Li Cai's generators
@@ -148,8 +148,7 @@ class Word:
 #		return ''.join(str(K) for K in self.letters)
 
 	def __str__(self):
-		return 'Word['+''.join(str(K) for K in self.letters)+']'
-#		return ''.join(str(K) for K in self.letters)
+		return ''.join(str(K) for K in self.letters)
 
 #-------------------------------------------------------------------------------------
 # Elementary operations
@@ -282,6 +281,38 @@ def ReducedPathRelation(big_graph, path, J):
 		big_graph.subgraph(J)
 	)
 
+#---------------------------------
+# Listing the generators
+#---------------------------------
+
+#Theta($Г$) produces the minimal vertices
+#of path components of $Г$ not containing $\max(Г)$
+def Theta(G):
+	maxvertex = max(G.nodes)
+	ans = set()
+	for c in nx.connected_components(G):
+		if maxvertex not in c:
+			ans.add(min(c))
+	return ans
+	
+#list of subsets of a given set
+def powerset(iterable):
+	s = list(iterable)
+	return chain.from_iterable(
+		combinations(s,r) for r in range(len(s)+1))
+
+def ListGensJ(G,J):
+	return [Gen(i,J,0) for i in Theta(G.subgraph(J))]
+
+#returns the list containing all L(i,J)'s for G
+def ListGens(G):
+	ans = []
+	for J in powerset(G.nodes):
+		if len(J) == 0:
+			continue
+		ans += ListGensJ(G,J)
+	return ans			
+
 #----------------------------------------------------------------------------
 # Verification of relations.
 #
@@ -304,30 +335,32 @@ def GenToStr(K):
 	lst.remove(x)
 	return ans + inttochar(x) + ''.join(map(inttochar,lst))[::-1] 
 
-def SimplifyStr(s, m, graph):
-	upd = True
+def WordToStr(W):
+	return ''.join(map(GenToStr,W.letters))
+
+def SimplifyStr(s, graph):
+	was_updated = True
 	n = len(s)
 	currshift = 0#position, starting from which we try to cancel two letters
-	while upd and n > 0:
-		upd = False
+	while was_updated and n > 0:
+		was_updated = False
 		for ti in range(n):
 			i = (ti+currshift) % n
 			lt = s[i]#current letter
 			if lt in s[i+1:]:
-				nextpos = i+1+s[i+1:].index(lt)#next occurence of that letter
+				nextpos = i+1+s[i+1:].index(lt)#next occurence of lt
+				
+				#if the letters inbetween commute with lt, we cancel these copies
 				if all(graph.has_edge(chartoint(lt), chartoint(ot))
 						for ot in s[i+1:nextpos]):
 					n -= 2
 					s = s[:i]+s[i+1:nextpos]+s[nextpos+1:]
-					upd = True
+					was_updated = True
 					currshift = i-1#an optimization to remove "abcddcba" faster
 					break
 	return s
-
-def WordToStr(W):
-	return ''.join(map(GenToStr,W.letters))
 	
-def IsARelation(W, m, graph):
+def IsARelation(W, graph):
 	s = WordToStr(W)
-	return len(SimplifyStr(s,m,graph) == 0)
+	return (len(SimplifyStr(s, graph)) == 0)
 
