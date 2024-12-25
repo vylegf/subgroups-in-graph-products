@@ -6,7 +6,6 @@ m=12
 #def PolygonRelation(m):
 #	r = list(range(1,m+1))
 #	return ReducedPathRelation(nx.cycle_graph(r), r, r)
-
 #start_time = time.time()
 #rel = PolygonRelation(m)
 #end_time = time.time()
@@ -16,7 +15,7 @@ r = list(range(1,m+1))
 G = nx.cycle_graph(r)
 
 print('presenting the commutator subgroup in the RACG for the {}-cycle.'.format(m))
-print('the generators:')
+#print('the generators:')
 #print(*ListGens(G),sep='\n')
 
 print('computing the relation... ', end='', flush=True)
